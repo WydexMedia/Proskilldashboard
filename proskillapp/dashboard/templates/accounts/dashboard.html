@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f2f5f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 32px 40px 40px 40px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        h2 {
+            color: #0173c5;
+            margin: 0;
+        }
+        nav a {
+            color: #0173c5;
+            text-decoration: none;
+            margin-left: 24px;
+            font-weight: 500;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            background: #fafbfc;
+        }
+        th, td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        th {
+            background: #f0f4f8;
+            color: #333;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .actions button, .actions a {
+            background: #0173c5;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 16px;
+            margin-right: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .actions button:hover, .actions a:hover {
+            background: #025aa5;
+        }
+        .add-btn {
+            background: #28a745;
+            margin-bottom: 12px;
+        }
+        .add-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h2>Accounts Dashboard</h2>
+            <nav>
+                <a href="/logout/">Logout</a>
+            </nav>
+        </header>
+        <a href="{% url 'stock_add' %}" class="add-btn actions">+ Add Stock</a>
+        <a href="{% url 'ticket_add' %}" class="add-btn actions" style="background:#ffc107; color:#222; margin-left:10px;">+ Add Ticket</a>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+            {% for stock in stocks %}
+            <tr>
+                <td>{{ stock.name }}</td>
+                <td>{{ stock.quantity }}</td>
+                <td>{{ stock.price }}</td>
+                <td class="actions">
+                    <a href="{% url 'stock_edit' stock.pk %}" class="actions">Edit</a>
+                    <a href="{% url 'stock_delete' stock.pk %}" class="actions" style="background:#dc3545;">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

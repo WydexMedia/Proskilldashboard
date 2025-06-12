@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Stock</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f2f5f9; }
+        .container { max-width: 400px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 32px 40px; }
+        h2 { color: #dc3545; margin-bottom: 24px; }
+        form { display: flex; flex-direction: column; gap: 16px; }
+        button { padding: 12px; background: #dc3545; color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 12px; }
+        button:hover { background: #b52a37; }
+        a { color: #0173c5; text-decoration: none; margin-top: 12px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Delete Stock</h2>
+        <p>Are you sure you want to delete <strong>{{ stock.name }}</strong>?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Yes, Delete</button>
+        </form>
+        <a href="{% url 'accounts_dashboard' %}">Cancel</a>
+    </div>
+</body>
+</html>

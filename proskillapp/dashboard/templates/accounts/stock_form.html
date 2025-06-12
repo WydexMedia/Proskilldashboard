@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ action }} Stock</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f2f5f9; }
+        .container { max-width: 400px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 32px 40px; }
+        h2 { color: #0173c5; margin-bottom: 24px; }
+        form { display: flex; flex-direction: column; gap: 16px; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+        button { padding: 12px; background: #0173c5; color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 12px; }
+        button:hover { background: #025aa5; }
+        a { color: #0173c5; text-decoration: none; margin-top: 12px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>{{ action }} Stock</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">{{ action }}</button>
+        </form>
+        <a href="{% url 'accounts_dashboard' %}">Back to Dashboard</a>
+    </div>
+</body>
+</html>

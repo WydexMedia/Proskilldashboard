@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Ticket Slip</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff; }
+        .slip-container { max-width: 500px; margin: 40px auto; background: #f8f9fa; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 32px 40px; border: 1px solid #0173c5; }
+        h2 { color: #0173c5; margin-bottom: 24px; text-align: center; }
+        .info { margin-bottom: 18px; font-size: 18px; }
+        .label { font-weight: bold; color: #333; }
+        .value { margin-left: 8px; }
+        .status { font-weight: bold; color: #28a745; }
+        .pending { color: #ffc107; }
+        .done { color: #28a745; }
+        .footer { margin-top: 32px; text-align: center; color: #888; font-size: 14px; }
+        @media print {
+            .footer, .print-btn { display: none; }
+            .slip-container { box-shadow: none; border: none; }
+        }
+        .print-btn { display: block; margin: 0 auto 24px auto; background: #0173c5; color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 16px; cursor: pointer; }
+        .print-btn:hover { background: #025aa5; }
+    </style>
+</head>
+<body>
+    <div class="slip-container">
+        <button class="print-btn" onclick="window.print()">Print</button>
+        <h2>Delivery Ticket Slip</h2>
+        <div class="info"><span class="label">Stock:</span> <span class="value">{{ ticket.stock.name }}</span></div>
+        <div class="info"><span class="label">Type:</span> <span class="value">{{ ticket.stock.get_stock_type_display }}</span></div>
+        <div class="info"><span class="label">Quantity:</span> <span class="value">{{ ticket.stock.quantity }}</span></div>
+        <div class="info"><span class="label">To:</span> <span class="value">{{ ticket.delivery_to }}</span></div>
+        <div class="info"><span class="label">Date:</span> <span class="value">{{ ticket.created_at }}</span></div>
+        <div class="info"><span class="label">Status:</span> <span class="value {% if ticket.is_delivered %}done{% else %}pending{% endif %}">{% if ticket.is_delivered %}Done{% else %}Pending{% endif %}</span></div>
+        <div class="footer">Proskill Delivery System</div>
+    </div>
+</body>
+</html>
