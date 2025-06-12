@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proskill Management Home</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0173c5 0%, #6dd5ed 100%);
+            color: #222;
+        }
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 24px rgba(0,0,0,0.15);
+        }
+        .subtitle {
+            font-size: 1.5rem;
+            color: #e3f2fd;
+            margin-bottom: 32px;
+        }
+        .content {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+            padding: 32px 24px;
+            max-width: 480px;
+            margin: 0 auto 32px auto;
+        }
+        .content h2 {
+            color: #0173c5;
+            margin-bottom: 12px;
+        }
+        .content p {
+            color: #444;
+            font-size: 1.1rem;
+            margin-bottom: 0.5em;
+        }
+        .login-btn {
+            display: inline-block;
+            margin-top: 24px;
+            padding: 14px 40px;
+            background: #0173c5;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(1,115,197,0.10);
+            transition: background 0.2s, transform 0.2s;
+            text-decoration: none;
+        }
+        .login-btn:hover {
+            background: #025aa5;
+            transform: translateY(-2px) scale(1.03);
+        }
+        .footer {
+            color: #e3f2fd;
+            font-size: 1rem;
+            margin-top: 32px;
+            letter-spacing: 1px;
+        }
+        @media (max-width: 600px) {
+            .content { padding: 18px 6px; }
+            .logo { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="logo">Proskill Management</div>
+        <div class="subtitle">Delivery &amp; Accounts Platform</div>
+        <div class="content">
+            <h2>Welcome to Proskill Resin Art</h2>
+            <p>Efficiently manage your delivery and accounts operations with Proskill's modern platform.</p>
+            <p>Seamless workflow for both delivery partners and accounts teams.</p>
+            <p>Track, update, and manage your resin art business with ease.</p>
+            <a href="{% url 'login' %}" class="login-btn">Login</a>
+        </div>
+        <div class="footer">&copy; 2025 Proskill Resin Art. All rights reserved.</div>
+    </div>
+</body>
+</html>

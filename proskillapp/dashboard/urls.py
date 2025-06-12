@@ -3,7 +3,10 @@ from django.urls import path
 from django.contrib.auth.views import LogoutView
 from . import views
 
+from django.views.generic import TemplateView
+
 urlpatterns = [
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('redirect/', views.role_redirect, name='role_redirect'),
