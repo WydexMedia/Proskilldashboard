@@ -20,12 +20,10 @@ def accounts_dashboard(request):
     stocks = Stock.objects.all()
     oga_requests = OgaRequest.objects.all().order_by('-submitted_at')
     # Calculate total and available for each type
-    total_mehandi = sum(stock.quantity for stock in stocks if stock.stock_type == 'mehandi')
-    total_resin = sum(stock.quantity for stock in stocks if stock.stock_type == 'resin')
-    approved_mehandi = oga_requests.filter(approved=True, stock_type='mehandi').count()
-    approved_resin = oga_requests.filter(approved=True, stock_type='resin').count()
-    available_mehandi = total_mehandi - approved_mehandi
-    available_resin = total_resin - approved_resin
+    total_mehandi = sum(stock.added_quantity for stock in Stock.objects.filter(stock_type='mehandi'))
+    total_resin = sum(stock.added_quantity for stock in Stock.objects.filter(stock_type='resin'))
+    available_mehandi = sum(stock.quantity for stock in Stock.objects.filter(stock_type='mehandi'))
+    available_resin = sum(stock.quantity for stock in Stock.objects.filter(stock_type='resin'))
 
     # Handle OgaRequest approval
     if request.method == 'POST' and 'approve_oga' in request.POST:
@@ -33,7 +31,7 @@ def accounts_dashboard(request):
         oga = OgaRequest.objects.get(pk=oga_id)
         if not oga.approved:
             # Find stock of the correct type
-            stock = Stock.objects.filter(name__iexact=oga.stock_type, quantity__gt=0).first()
+            stock = Stock.objects.filter(stock_type=oga.stock_type, quantity__gt=0).first()
             if stock:
                 oga.approved = True
                 oga.approved_at = timezone.now()

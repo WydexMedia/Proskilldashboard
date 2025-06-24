@@ -14,6 +14,13 @@ class StockForm(forms.ModelForm):
         ]
         self.fields['stock_type'].initial = 'resin'  # Set Resin as default
         self.fields['quantity'].label = 'Number of Stock'
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance._state.adding:
+            instance.added_quantity = instance.quantity
+        if commit:
+            instance.save()
+        return instance
 
 class DeliveryTicketForm(forms.ModelForm):
     class Meta:
