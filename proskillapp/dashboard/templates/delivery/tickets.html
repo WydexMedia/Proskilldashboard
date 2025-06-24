@@ -4,116 +4,583 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Delivery Tickets</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>Delivery Tickets - Premium Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: 'Inter', sans-serif;
-        background: #f2f5f9;
-        color: #333;
-      }
-      .container {
-        padding: 40px;
-        max-width: 1200px;
-        margin: auto;
-      }
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 40px;
-      }
-      h2 {
-        color: #0173c5;
-        font-size: 28px;
-      }
-      nav a {
-        text-decoration: none;
-        background: #0173c5;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 6px;
-        font-weight: 500;
-      }
-      .dashboard-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 20px;
-        margin-bottom: 40px;
-      }
-      .card {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-      }
-      .card h3 {
-        margin: 0 0 6px;
-        font-size: 18px;
-        font-weight: 600;
-        color: #0173c5;
-      }
-      .card p {
-        font-size: 14px;
-        color: #666;
-      }
-      .actions {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-      }
-      .actions a {
-        text-decoration: none;
-        padding: 8px 16px;
-        border-radius: 6px;
-        font-size: 14px;
-        color: #fff;
-      }
-      .add-ticket {
-        background-color: #28a745;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        background: white;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-      }
-      th, td {
-        padding: 14px 18px;
-        text-align: left;
-        border-bottom: 1px solid #f0f0f0;
-      }
-      th {
-        background: #f7f9fc;
-        color: #333;
-        font-weight: 600;
-      }
-      td:last-child {
-        white-space: nowrap;
-      }
-      .edit-btn, .delete-btn, .print-btn {
-        text-decoration: none;
-        padding: 6px 12px;
-        font-size: 13px;
-        border-radius: 4px;
-        color: #fff;
-        margin-right: 6px;
-      }
-      .edit-btn { background: #007bff; }
-      .delete-btn { background: #dc3545; }
-      .print-btn { background: #6c757d; }
-      .status-pending { color: #ff9800; font-weight: 600; }
-      .status-done { color: #28a745; font-weight: 600; }
-      @media (max-width: 600px) {
-        header { flex-direction: column; align-items: flex-start; gap: 10px; }
-      }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2a2a2a 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        /* Animated background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.02) 1px, transparent 1px),
+                radial-gradient(circle at 75% 75%, rgba(255,255,255,0.02) 1px, transparent 1px),
+                radial-gradient(circle at 50% 10%, rgba(255,255,255,0.01) 1px, transparent 1px),
+                radial-gradient(circle at 90% 40%, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 120px 120px, 100px 100px, 140px 140px, 80px 80px;
+            animation: float 25s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: linear-gradient(45deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1));
+            border-radius: 50%;
+            animation: particle-float 12s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .particle:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { top: 25%; right: 15%; animation-delay: 3s; }
+        .particle:nth-child(3) { bottom: 35%; left: 20%; animation-delay: 6s; }
+        .particle:nth-child(4) { bottom: 25%; right: 25%; animation-delay: 9s; }
+
+        @keyframes particle-float {
+            0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.2; }
+            50% { transform: translateY(-40px) translateX(30px); opacity: 0.8; }
+        }
+
+        .container {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 24px 32px;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: slideDown 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        nav a {
+            display: inline-block;
+            text-decoration: none;
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.8), rgba(220, 53, 69, 0.6));
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s ease;
+        }
+
+        nav a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(220, 53, 69, 0.3);
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.9), rgba(220, 53, 69, 0.7));
+        }
+
+        nav a:hover::before {
+            left: 100%;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            animation-delay: var(--delay, 0s);
+        }
+
+        .card:nth-child(1) { --delay: 0.1s; }
+        .card:nth-child(2) { --delay: 0.2s; }
+        .card:nth-child(3) { --delay: 0.3s; }
+        .card:nth-child(4) { --delay: 0.4s; }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: all 0.8s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 35px 70px -12px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card h3 {
+            margin: 0 0 12px;
+            font-size: 20px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        /* Actions Section */
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 32px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px 24px;
+            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
+        }
+
+        .add-ticket {
+            display: inline-block;
+            text-decoration: none;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-ticket::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .add-ticket:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+            background: linear-gradient(135deg, #16a34a, #15803d);
+        }
+
+        .add-ticket:hover::before {
+            left: 100%;
+        }
+
+        /* Sort Form */
+        form {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: #ffffff;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        select option {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        /* Table */
+        .table-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s both;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 20px 24px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        td {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        tbody tr::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        tbody tr:hover::before {
+            width: 100%;
+        }
+
+        td:last-child {
+            white-space: nowrap;
+        }
+
+        /* Status Styles */
+        .status-pending {
+            color: #f59e0b;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .status-done {
+            color: #22c55e;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+        }
+
+        /* Button Styles */
+        .edit-btn, .delete-btn, .print-btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 8px;
+            color: #ffffff;
+            margin-right: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .print-btn {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            border-color: rgba(107, 114, 128, 0.3);
+        }
+
+        .edit-btn::before, .delete-btn::before, .print-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .edit-btn:hover, .delete-btn:hover, .print-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .edit-btn:hover::before, .delete-btn:hover::before, .print-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Mark as Shipped Form */
+        .shipping-form {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .shipping-form input[type="text"] {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: #ffffff;
+            font-size: 12px;
+            width: 140px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .shipping-form input[type="text"]:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .shipping-form input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .shipping-form button {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            color: #ffffff;
+            padding: 6px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .shipping-form button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 800px;
+            }
+
+            th, td {
+                padding: 12px 16px;
+                font-size: 12px;
+            }
+
+            .shipping-form {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .shipping-form input[type="text"] {
+                width: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .actions {
+                padding: 16px;
+            }
+
+            th, td {
+                padding: 8px 12px;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+
     <div class="container">
         <header>
             <h2>Delivery Tickets</h2>
@@ -121,68 +588,72 @@
                 <a href="/logout/">Logout</a>
             </nav>
         </header>
+
         <div class="actions">
-          {% if request.user|has_group:"accounts" %}
-            <a href="{% url 'ticket_add' %}" class="add-ticket">+ Add Ticket</a>
-          {% endif %}
-          <form method="get" style="display:inline; margin-left:20px;">
-            <label for="sort">Sort by:</label>
-            <select name="sort" id="sort" onchange="this.form.submit()">
-              <option value="pending" {% if sort == 'pending' %}selected{% endif %}>Pending on Top</option>
-              <option value="done" {% if sort == 'done' %}selected{% endif %}>Done on Top</option>
-              <option value="recent" {% if sort == 'recent' %}selected{% endif %}>Most Recent</option>
-            </select>
-          </form>
+            {% if request.user|has_group:"accounts" %}
+                <a href="{% url 'ticket_add' %}" class="add-ticket">+ Add Ticket</a>
+            {% endif %}
+            <form method="get">
+                <label for="sort">Sort by:</label>
+                <select name="sort" id="sort" onchange="this.form.submit()">
+                    <option value="pending" {% if sort == 'pending' %}selected{% endif %}>Pending on Top</option>
+                    <option value="done" {% if sort == 'done' %}selected{% endif %}>Done on Top</option>
+                    <option value="recent" {% if sort == 'recent' %}selected{% endif %}>Most Recent</option>
+                </select>
+            </form>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Stock</th>
-              <th>To</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Tracking ID</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for ticket in tickets %}
-            <tr>
-              <td>{{ ticket.stock.name }}</td>
-              <td>{{ ticket.delivery_to }}</td>
-              <td>{{ ticket.created_at }}</td>
-              <td>
-                {% if request.user|has_group:"delivery partners" %}
-                  {% if not ticket.is_delivered %}
-                    <form method="post" style="display:inline;">
-                      {% csrf_token %}
-                      <input type="hidden" name="ticket_id" value="{{ ticket.pk }}">
-                      <input type="text" name="tracking_id" placeholder="Enter Tracking ID" style="width:120px; margin-right:8px;" required>
-                      <button type="submit" name="status" value="done" style="background:#0173c5;color:#fff;padding:6px 16px;border:none;border-radius:4px;cursor:pointer;">Mark as Shipped</button>
-                    </form>
-                  {% else %}
-                    <span class="status-done">Shipped</span>
-                  {% endif %}
-                {% else %}
-                  {% if ticket.is_delivered %}
-                    <span class="status-done">Shipped</span>
-                  {% else %}
-                    <span class="status-pending">Pending</span>
-                  {% endif %}
-                {% endif %}
-              </td>
-              <td>{% if ticket.is_delivered %}{{ ticket.tracking_id }}{% endif %}</td>
-              <td>
-                <a href="{% url 'print_ticket' ticket.pk %}" class="print-btn">Print</a>
-                {% if request.user|has_group:"accounts" %}
-                  <a href="{% url 'ticket_edit' ticket.pk %}" class="edit-btn">Edit</a>
-                  <a href="{% url 'ticket_delete' ticket.pk %}" class="delete-btn">Delete</a>
-                {% endif %}
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stock</th>
+                        <th>To</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Tracking ID</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+                    <tr>
+                        <td>{{ ticket.stock }}</td>
+                        <td>{{ ticket.delivery_to }}</td>
+                        <td>{{ ticket.created_at }}</td>
+                        <td>
+                            {% if request.user|has_group:"delivery partners" %}
+                                {% if not ticket.is_delivered %}
+                                    <form method="post" class="shipping-form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="ticket_id" value="{{ ticket.pk }}">
+                                        <input type="text" name="tracking_id" placeholder="Enter Tracking ID" required>
+                                        <button type="submit" name="status" value="done">Mark as Shipped</button>
+                                    </form>
+                                {% else %}
+                                    <span class="status-done">Shipped</span>
+                                {% endif %}
+                            {% else %}
+                                {% if ticket.is_delivered %}
+                                    <span class="status-done">Shipped</span>
+                                {% else %}
+                                    <span class="status-pending">Pending</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>{% if ticket.is_delivered %}{{ ticket.tracking_id }}{% endif %}</td>
+                        <td>
+                            <a href="{% url 'print_ticket' ticket.pk %}" class="print-btn">Print</a>
+                            {% if request.user|has_group:"accounts" %}
+                                <a href="{% url 'ticket_edit' ticket.pk %}" class="edit-btn">Edit</a>
+                                <a href="{% url 'ticket_delete' ticket.pk %}" class="delete-btn">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>

@@ -30,7 +30,7 @@ class DeliveryTicketForm(forms.ModelForm):
 class OgaRequestForm(forms.ModelForm):
     class Meta:
         model = OgaRequest
-        fields = ['stock_type', 'oga_name', 'phone', 'email', 'address', 'pincode', 'landmark', 'screenshot', 'full_payment']
+        fields = ['stock_type', 'oga_name','customer_name', 'phone', 'email', 'address', 'pincode', 'landmark', 'screenshot', 'full_payment']
         widgets = {
             'address': forms.Textarea(attrs={'rows': 3}),
         }
@@ -38,6 +38,7 @@ class OgaRequestForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['stock_type'].required = True
         self.fields['oga_name'].required = True
+        self.fields['customer_name'].required = True
         self.fields['phone'].required = True
         self.fields['email'].required = True
         self.fields['address'].required = True

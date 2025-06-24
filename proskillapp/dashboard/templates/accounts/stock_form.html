@@ -4,15 +4,348 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ action }} Stock</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f2f5f9; }
-        .container { max-width: 400px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 32px 40px; }
-        h2 { color: #0173c5; margin-bottom: 24px; }
-        form { display: flex; flex-direction: column; gap: 16px; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
-        button { padding: 12px; background: #0173c5; color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 12px; }
-        button:hover { background: #025aa5; }
-        a { color: #0173c5; text-decoration: none; margin-top: 12px; display: inline-block; }
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            font-weight: 300;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        /* Animated background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            pointer-events: none;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+        
+        .container {
+            max-width: 480px;
+            width: 90%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            padding: 50px 45px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #333;
+            backdrop-filter: blur(10px);
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: left 0.8s;
+        }
+        
+        .container:hover::before {
+            left: 100%;
+        }
+        
+        h2 {
+            color: #ffffff;
+            margin-bottom: 40px;
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255,255,255,0.3);
+            position: relative;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { opacity: 0.5; transform: translateX(-50%) scaleX(0.8); }
+            to { opacity: 1; transform: translateX(-50%) scaleX(1.2); }
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #cccccc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #333;
+            border-radius: 12px;
+            font-size: 16px;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #ffffff;
+            background: linear-gradient(135deg, #333 0%, #2a2a2a 100%);
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+        
+        input::placeholder {
+            color: #666;
+        }
+        
+        select option {
+            background: #2a2a2a;
+            color: #ffffff;
+            border: none;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 18px 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+            color: #000000;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, transparent 70%);
+            transition: all 0.4s;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255,255,255,0.3);
+        }
+        
+        .submit-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .back-link {
+            color: #cccccc;
+            text-decoration: none;
+            margin-top: 30px;
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 400;
+            padding: 12px 24px;
+            border: 1px solid #444;
+            border-radius: 25px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .back-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .back-link:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: #666;
+            transform: translateY(-2px);
+            color: #ffffff;
+        }
+        
+        .back-link:hover::before {
+            left: 100%;
+        }
+        
+        /* Floating particles animation */
+        .container::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            right: 10%;
+            width: 4px;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            animation: particle1 4s ease-in-out infinite;
+        }
+        
+        @keyframes particle1 {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px);
+                opacity: 0.3;
+            }
+            50% { 
+                transform: translateY(-20px) translateX(10px);
+                opacity: 1;
+            }
+        }
+        
+        /* Form field animation on focus */
+        input:focus + .field-highlight,
+        select:focus + .field-highlight {
+            transform: scaleX(1);
+        }
+        
+        .field-highlight {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        /* Custom styling for Django form fields */
+        p {
+            margin: 0;
+            position: relative;
+        }
+        
+        p label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #cccccc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        
+        /* Error styling */
+        .errorlist {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0 0;
+            color: #ff6b6b;
+            font-size: 12px;
+        }
+        
+        .errorlist li {
+            background: rgba(255, 107, 107, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 3px solid #ff6b6b;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 30px;
+                margin: 20px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            input, select {
+                padding: 14px 16px;
+                font-size: 14px;
+            }
+            
+            .submit-btn {
+                padding: 16px 20px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -21,9 +354,9 @@
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">{{ action }}</button>
+            <button type="submit" class="submit-btn">{{ action }}</button>
         </form>
-        <a href="{% url 'accounts_dashboard' %}">Back to Dashboard</a>
+        <a href="{% url 'accounts_dashboard' %}" class="back-link">← Back to Dashboard</a>
     </div>
 </body>
 </html>
