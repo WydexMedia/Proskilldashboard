@@ -21,4 +21,5 @@ urlpatterns = [
     path('delivery/ticket/<int:pk>/edit/', views.ticket_edit, name='ticket_edit'),
     path('delivery/ticket/<int:pk>/delete/', views.ticket_delete, name='ticket_delete'),
     path('delivery/ticket/<int:pk>/print/', views.print_ticket, name='print_ticket'),
+    path('ogaform/', views.ogaform_view, name='ogaform'),
 ]

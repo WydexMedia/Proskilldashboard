@@ -3,27 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ action }} Ticket</title>
+    <title>{{ action }} Delivery Ticket</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f2f5f9; }
-        .container { max-width: 400px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 32px 40px; }
-        h2 { color: #0173c5; margin-bottom: 24px; }
-        form { display: flex; flex-direction: column; gap: 16px; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
-        button { padding: 12px; background: #0173c5; color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 12px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f8ff; }
+        .form-container { max-width: 600px; margin: 40px auto; background: #fff; padding: 32px 24px; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        h2 { color: #0173c5; margin-bottom: 18px; }
+        label { display: block; margin-top: 16px; color: #333; }
+        input, textarea, select { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #b3c6e0; border-radius: 6px; font-size: 1rem; }
+        button { margin-top: 24px; padding: 12px 32px; background: #0173c5; color: #fff; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; transition: background 0.2s; }
         button:hover { background: #025aa5; }
-        a { color: #0173c5; text-decoration: none; margin-top: 12px; display: inline-block; }
+        .form-title { font-size: 1.5rem; margin-bottom: 24px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { font-weight: 500; margin-bottom: 8px; }
+        .form-input, .form-select, .form-textarea { height: 40px; }
+        .form-textarea { resize: vertical; }
+        .checkbox-group { display: flex; align-items: center; }
+        .checkbox-input { width: auto; margin-right: 10px; }
+        .checkbox-label { margin: 0; }
+        .submit-btn { width: 100%; }
+        .error-list { color: red; margin-bottom: 16px; }
+        .error-list strong { display: block; margin-bottom: 8px; }
+        .error-list li { margin-left: 20px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>{{ action }} Ticket</h2>
-        <form method="post">
+    <div class="form-container">
+        <h2 class="form-title">{{ action }} Delivery Ticket</h2>
+        {% if form.errors %}
+          <div class="error-list">
+            <strong>Please fix the following errors:</strong>
+            <ul>
+              {% for field in form %}
+                {% for error in field.errors %}
+                  <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">{{ action }}</button>
+            <div class="form-group">
+                <label for="id_stock_type" class="form-label">Stock Type *</label>
+                <select id="id_stock_type" name="stock_type" class="form-select" required>
+                    <option value="">Select Stock Type</option>
+                    <option value="mehandi" {% if form.stock_type.value == 'mehandi' %}selected{% endif %}>Mehandi</option>
+                    <option value="resin" {% if form.stock_type.value == 'resin' %}selected{% endif %}>Resin</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="id_oga_name" class="form-label">OGA Name *</label>
+                <input type="text" id="id_oga_name" name="oga_name" class="form-input" required placeholder="Enter OGA Name" value="{{ form.oga_name.value|default:'' }}">
+            </div>
+            <div class="form-group">
+                <label for="id_phone" class="form-label">Phone Number *</label>
+                <input type="tel" id="id_phone" name="phone" class="form-input" required placeholder="Enter Phone Number" value="{{ form.phone.value|default:'' }}">
+            </div>
+            <div class="form-group">
+                <label for="id_email" class="form-label">Email Address *</label>
+                <input type="email" id="id_email" name="email" class="form-input" required placeholder="Enter Email Address" value="{{ form.email.value|default:'' }}">
+            </div>
+            <div class="form-group">
+                <label for="id_address" class="form-label">Address *</label>
+                <textarea id="id_address" name="address" class="form-textarea" required placeholder="Enter Complete Address">{{ form.address.value|default:'' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="id_pincode" class="form-label">PIN Code *</label>
+                <input type="text" id="id_pincode" name="pincode" class="form-input" required placeholder="Enter PIN Code" pattern="[0-9]{6}" maxlength="6" value="{{ form.pincode.value|default:'' }}">
+            </div>
+            <div class="form-group">
+                <label for="id_landmark" class="form-label">Landmark</label>
+                <input type="text" id="id_landmark" name="landmark" class="form-input" placeholder="Enter Nearby Landmark" value="{{ form.landmark.value|default:'' }}">
+            </div>
+            <div class="form-group">
+                <label for="id_screenshot" class="form-label">Add Screenshot *</label>
+                {{ form.screenshot }}
+                <small style="color:#b00;">If the form reloads due to an error, please re-select your screenshot before submitting again.</small>
+            </div>
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="id_full_payment" name="full_payment" class="checkbox-input" value="1" {% if form.full_payment.value %}checked{% endif %}>
+                    <label for="id_full_payment" class="checkbox-label">Full Payment</label>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn">Submit Ticket</button>
         </form>
-        <a href="{% url 'delivery_dashboard' %}">Back to Dashboard</a>
     </div>
 </body>
 </html>

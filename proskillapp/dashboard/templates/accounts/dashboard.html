@@ -134,48 +134,72 @@
 
     <div class="dashboard-cards">
       <div class="card">
-        <h3>$30200</h3>
-        <p>All Earnings</p>
+        <h3>{{ total_mehandi }}</h3>
+        <p>Total Mehandi Stock</p>
       </div>
       <div class="card">
-        <h3>145</h3>
-        <p>Tasks Completed</p>
+        <h3>{{ available_mehandi }}</h3>
+        <p>Available Mehandi Stock</p>
       </div>
       <div class="card">
-        <h3>290+</h3>
-        <p>Page Views</p>
+        <h3>{{ total_resin }}</h3>
+        <p>Total Resin Stock</p>
       </div>
       <div class="card">
-        <h3>500</h3>
-        <p>App Downloads</p>
+        <h3>{{ available_resin }}</h3>
+        <p>Available Resin Stock</p>
       </div>
     </div>
-
     <div class="actions">
       <a href="{% url 'stock_add' %}" class="add-stock">+ Add Stock</a>
       <a href="{% url 'ticket_add' %}" class="add-ticket">+ Add Ticket</a>
     </div>
-
+    <h3 style="margin-top:40px;color:#0173c5;">Oga Requests</h3>
     <table>
       <thead>
         <tr>
           <th>Name</th>
-          <th>Quantity</th>
-          <th>Price</th>
-          <th>Actions</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Address</th>
+          <th>Pincode</th>
+          <th>Screenshot</th>
+          <th>Status</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        {% for stock in stocks %}
+        {% for oga in oga_requests %}
         <tr>
-          <td>{{ stock.name }}</td>
-          <td>{{ stock.quantity }}</td>
-          <td>{{ stock.price }}</td>
+          <td>{{ oga.oga_name }}</td>
+          <td>{{ oga.phone }}</td>
+          <td>{{ oga.email }}</td>
+          <td>{{ oga.address }}</td>
+          <td>{{ oga.pincode }}</td>
           <td>
-            <a href="{% url 'stock_edit' stock.pk %}" class="edit-btn">Edit</a>
-            <a href="{% url 'stock_delete' stock.pk %}" class="delete-btn">Delete</a>
+            {% if oga.screenshot %}
+              <a href="{{ oga.screenshot.url }}" target="_blank">
+                <img src="{{ oga.screenshot.url }}" alt="Screenshot" style="max-width:60px;max-height:60px;border-radius:6px;box-shadow:0 2px 8px #ccc;">
+              </a>
+            {% else %}-{% endif %}
+          </td>
+          <td>{% if oga.approved %}<span style="color:green;">Approved</span>{% else %}Pending{% endif %}</td>
+          <td>
+            {% if not oga.approved and oga.can_approve %}
+            <form method="post" style="display:inline;">
+              {% csrf_token %}
+              <input type="hidden" name="oga_id" value="{{ oga.id }}" />
+              <button type="submit" name="approve_oga" style="background:#0173c5;color:#fff;padding:6px 16px;border:none;border-radius:4px;cursor:pointer;">Approve</button>
+            </form>
+            {% elif oga.approved %}
+            <span style="color:gray;">-</span>
+            {% else %}
+            <span style="color:red;">No Stock</span>
+            {% endif %}
           </td>
         </tr>
+        {% empty %}
+        <tr><td colspan="8" style="text-align:center;">No Oga Requests</td></tr>
         {% endfor %}
       </tbody>
     </table>

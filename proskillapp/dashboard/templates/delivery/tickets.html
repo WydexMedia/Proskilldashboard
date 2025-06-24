@@ -125,6 +125,14 @@
           {% if request.user|has_group:"accounts" %}
             <a href="{% url 'ticket_add' %}" class="add-ticket">+ Add Ticket</a>
           {% endif %}
+          <form method="get" style="display:inline; margin-left:20px;">
+            <label for="sort">Sort by:</label>
+            <select name="sort" id="sort" onchange="this.form.submit()">
+              <option value="pending" {% if sort == 'pending' %}selected{% endif %}>Pending on Top</option>
+              <option value="done" {% if sort == 'done' %}selected{% endif %}>Done on Top</option>
+              <option value="recent" {% if sort == 'recent' %}selected{% endif %}>Most Recent</option>
+            </select>
+          </form>
         </div>
         <table>
           <thead>
@@ -133,6 +141,7 @@
               <th>To</th>
               <th>Date</th>
               <th>Status</th>
+              <th>Tracking ID</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -144,22 +153,25 @@
               <td>{{ ticket.created_at }}</td>
               <td>
                 {% if request.user|has_group:"delivery partners" %}
-                  <form method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <input type="hidden" name="ticket_id" value="{{ ticket.pk }}">
-                    <select name="status" onchange="this.form.submit()">
-                      <option value="pending" {% if not ticket.is_delivered %}selected{% endif %}>Pending</option>
-                      <option value="done" {% if ticket.is_delivered %}selected{% endif %}>Done</option>
-                    </select>
-                  </form>
+                  {% if not ticket.is_delivered %}
+                    <form method="post" style="display:inline;">
+                      {% csrf_token %}
+                      <input type="hidden" name="ticket_id" value="{{ ticket.pk }}">
+                      <input type="text" name="tracking_id" placeholder="Enter Tracking ID" style="width:120px; margin-right:8px;" required>
+                      <button type="submit" name="status" value="done" style="background:#0173c5;color:#fff;padding:6px 16px;border:none;border-radius:4px;cursor:pointer;">Mark as Shipped</button>
+                    </form>
+                  {% else %}
+                    <span class="status-done">Shipped</span>
+                  {% endif %}
                 {% else %}
                   {% if ticket.is_delivered %}
-                    <span class="status-done">Done</span>
+                    <span class="status-done">Shipped</span>
                   {% else %}
                     <span class="status-pending">Pending</span>
                   {% endif %}
                 {% endif %}
               </td>
+              <td>{% if ticket.is_delivered %}{{ ticket.tracking_id }}{% endif %}</td>
               <td>
                 <a href="{% url 'print_ticket' ticket.pk %}" class="print-btn">Print</a>
                 {% if request.user|has_group:"accounts" %}

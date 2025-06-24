@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Stock Type</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f2f5f9; }
+        .container { max-width: 400px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 32px 40px; }
+        h2 { color: #0173c5; margin-bottom: 24px; }
+        .btn-group { display: flex; flex-direction: column; gap: 16px; }
+        a.button { padding: 16px; background: #0173c5; color: #fff; border: none; border-radius: 8px; font-size: 18px; text-align: center; text-decoration: none; cursor: pointer; }
+        a.button:hover { background: #025aa5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Select Stock Type to Add</h2>
+        <div class="btn-group">
+            <a class="button" href="?stock_type=mehandi">Add Mehandi Stock</a>
+            <a class="button" href="?stock_type=resin">Add Resin Stock</a>
+        </div>
+        <a href="{% url 'accounts_dashboard' %}" style="margin-top:24px;display:block;">Back to Dashboard</a>
+    </div>
+</body>
+</html>
