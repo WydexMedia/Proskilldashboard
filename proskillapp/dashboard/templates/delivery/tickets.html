@@ -596,9 +596,8 @@
             <form method="get">
                 <label for="sort">Sort by:</label>
                 <select name="sort" id="sort" onchange="this.form.submit()">
-                    <option value="pending" {% if sort == 'pending' %}selected{% endif %}>Pending on Top</option>
-                    <option value="done" {% if sort == 'done' %}selected{% endif %}>Done on Top</option>
-                    <option value="recent" {% if sort == 'recent' %}selected{% endif %}>Most Recent</option>
+                    <option value="unshipped" {% if sort == 'unshipped' %}selected{% endif %}>Unshipped on Top</option>
+                    <option value="date" {% if sort == 'date' %}selected{% endif %}>Newest First</option>
                 </select>
             </form>
         </div>
@@ -618,9 +617,9 @@
                 <tbody>
                     {% for ticket in tickets %}
                     <tr>
-                        <td>{{ ticket.stock }}</td>
+                        <td>{{ ticket.stock.get_stock_type_display }}</td>
                         <td>{{ ticket.delivery_to }}</td>
-                        <td>{{ ticket.created_at }}</td>
+                        <td>{{ ticket.created_at|date:'d-m-Y H:i'|timezone:'Asia/Kolkata' }}</td>
                         <td>
                             {% if request.user|has_group:"delivery partners" %}
                                 {% if not ticket.is_delivered %}
