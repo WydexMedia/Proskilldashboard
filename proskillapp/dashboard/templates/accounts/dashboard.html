@@ -450,6 +450,93 @@
         transform: translateY(0);
       }
     }
+
+    .oga-table-card {
+      background: linear-gradient(135deg, #23232a 0%, #23232a 100%);
+      border-radius: 18px;
+      box-shadow: 0 4px 32px #0002;
+      padding: 32px 24px 18px 24px;
+      margin-bottom: 40px;
+      border: 1px solid #29293a;
+    }
+    .oga-table-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+    .oga-search-bar {
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      background: #19191e;
+      color: #fff;
+      font-size: 15px;
+      width: 220px;
+      box-shadow: 0 2px 8px #0001;
+      transition: box-shadow 0.2s;
+    }
+    .oga-search-bar:focus {
+      outline: none;
+      box-shadow: 0 4px 16px #0002;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .modern-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: transparent;
+      border-radius: 12px;
+      overflow: hidden;
+      min-width: 900px;
+    }
+    .modern-table th, .modern-table td {
+      padding: 18px 16px;
+      text-align: left;
+      font-size: 15px;
+    }
+    .modern-table th {
+      background: #23232a;
+      color: #a3e635;
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #29293a;
+    }
+    .modern-table tbody tr:nth-child(even) {
+      background: #23232a;
+    }
+    .modern-table tbody tr:nth-child(odd) {
+      background: #18181b;
+    }
+    .modern-table tbody tr:hover td {
+      background: #23232a;
+      color: #a3e635;
+      transition: background 0.2s, color 0.2s;
+    }
+    @media (max-width: 1000px) {
+      .modern-table, .modern-table th, .modern-table td { font-size: 13px; }
+      .oga-table-card { padding: 12px 2px; }
+    }
+    @media (max-width: 700px) {
+      .modern-table, .modern-table th, .modern-table td { font-size: 11px; padding: 8px 4px; }
+      .oga-table-card { padding: 4px 0; }
+    }
+
+    .sold-metric {
+      background: linear-gradient(135deg, #18181b 0%, #23232a 100%) !important;
+      border: 1.5px solid #333 !important;
+      box-shadow: 0 2px 8px #0003 !important;
+    }
+    .small-metric {
+      font-size: 24px !important;
+      color: #a3e635 !important;
+      font-weight: 600 !important;
+    }
+    @media (max-width: 480px) {
+      .small-metric { font-size: 16px !important; }
+    }
   </style>
 </head>
 <body>
@@ -457,9 +544,78 @@
     <header>
       <h1>Accounts Dashboard</h1>
       <nav>
+        <a href="{% url 'stock_transactions' %}" style="margin-right: 18px;">Transactions</a>
         <a href="/logout/">Logout</a>
       </nav>
     </header>
+
+
+    <div class="oga-table-card" style="margin-bottom: 40px; display: flex; flex-direction: column; align-items: center;">
+      <h2 class="section-title" style="text-align: center; width: 100%;">Orders From OGA (Pending Approval)</h2>
+      <div class="table-responsive" style="width: 100%;">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>OGA Name</th>
+              <th>Stock Type</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Pincode</th>
+              <th>Screenshot</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for oga in oga_requests %}
+            <tr>
+              <td>{{ oga.oga_name }}</td>
+              <td>{{ oga.get_stock_type_display|default:oga.stock_type }}</td>
+              <td>{{ oga.customer_name }}</td>
+              <td>{{ oga.phone }}</td>
+              <td>{{ oga.address }}</td>
+              <td>{{ oga.pincode }}</td>
+              <td>
+                {% if oga.screenshot %}
+                  <a href="{{ oga.screenshot.url }}" target="_blank">
+                    <img src="{{ oga.screenshot.url }}" alt="Screenshot" class="screenshot-thumb">
+                  </a>
+                {% else %}—{% endif %}
+              </td>
+              <td>
+                <span class="status-pending">Pending</span>
+              </td>
+              <td>
+                {% if oga.can_approve %}
+                <form method="post" style="display:inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="oga_id" value="{{ oga.id }}" />
+                  <button type="submit" name="approve_oga" class="approve-btn">Approve</button>
+                </form>
+                {% else %}
+                <span class="status-no-stock">No Stock</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="10" class="empty-state">No OGA requests found</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+     <div class="actions-bar">
+      <a href="{% url 'stock_add' %}" class="action-btn">Add Stock</a>
+      <a href="{% url 'ticket_add' %}" class="action-btn">Add Ticket</a>
+    </div>
+
+    <div class="graph-card" style="background: #18181b; border-radius: 20px; margin-bottom: 40px; box-shadow: 0 2px 16px #0002; padding: 32px 24px;">
+      <canvas id="salesChart" height="80"></canvas>
+    </div>
 
     <div class="dashboard-grid">
       <div class="metric-card">
@@ -478,75 +634,70 @@
         <div class="metric-value">{{ available_resin }}</div>
         <div class="metric-label">Available Resin</div>
       </div>
+
+      <div class="metric-card sold-metric">
+        <div class="metric-value small-metric">{{ sold_mehandi_month }}</div>
+        <div class="metric-label">Mehandi Sold (This Month)</div>
+      </div>
+      <div class="metric-card sold-metric">
+        <div class="metric-value small-metric">{{ sold_resin_month }}</div>
+        <div class="metric-label">Resin Sold (This Month)</div>
+      </div>
+      <div class="metric-card sold-metric">
+        <div class="metric-value small-metric">{{ sold_mehandi_week }}</div>
+        <div class="metric-label">Mehandi Sold (This Week)</div>
+      </div>
+      <div class="metric-card sold-metric">
+        <div class="metric-value small-metric">{{ sold_resin_week }}</div>
+        <div class="metric-label">Resin Sold (This Week)</div>
+      </div>
+      <div class="metric-card sold-metric">
+        <div class="metric-value small-metric">{{ sold_mehandi_all }}</div>
+        <div class="metric-label">Mehandi Sold (All Time)</div>
+      </div>
+      <div class="metric-card sold-metric">
+        <div class="metric-value small-metric">{{ sold_resin_all }}</div>
+        <div class="metric-label">Resin Sold (All Time)</div>
+      </div>
     </div>
 
-    <div class="actions-bar">
-      <a href="{% url 'stock_add' %}" class="action-btn">Add Stock</a>
-      <a href="{% url 'ticket_add' %}" class="action-btn">Add Ticket</a>
-    </div>
-
-    <h2 class="section-title">Orders From OGA</h2>
-    
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>OGA Name</th>
-            <th>Customer</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Address</th>
-            <th>Pincode</th>
-            <th>Screenshot</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for oga in oga_requests %}
-          <tr>
-            <td>{{ oga.oga_name }}</td>
-            <td>{{ oga.customer_name }}</td>
-            <td>{{ oga.phone }}</td>
-            <td>{{ oga.email }}</td>
-            <td>{{ oga.address }}</td>
-            <td>{{ oga.pincode }}</td>
-            <td>
-              {% if oga.screenshot %}
-                <a href="{{ oga.screenshot.url }}" target="_blank">
-                  <img src="{{ oga.screenshot.url }}" alt="Screenshot" class="screenshot-thumb">
-                </a>
-              {% else %}—{% endif %}
-            </td>
-            <td>
-              {% if oga.approved %}
-                <span class="status-approved">Approved</span>
-              {% else %}
-                <span class="status-pending">Pending</span>
-              {% endif %}
-            </td>
-            <td>
-              {% if not oga.approved and oga.can_approve %}
-              <form method="post" style="display:inline;">
-                {% csrf_token %}
-                <input type="hidden" name="oga_id" value="{{ oga.id }}" />
-                <button type="submit" name="approve_oga" class="approve-btn">Approve</button>
-              </form>
-              {% elif oga.approved %}
-              <span style="color:#666;">—</span>
-              {% else %}
-              <span class="status-no-stock">No Stock</span>
-              {% endif %}
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="9" class="empty-state">No OGA requests found</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    const salesChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Mehandi (Month)', 'Resin (Month)', 'Mehandi (Week)', 'Resin (Week)', 'Mehandi (All)', 'Resin (All)'],
+        datasets: [{
+          label: 'Stock Sold',
+          data: [
+            parseInt("{{ sold_mehandi_month|default:'0'|escapejs }}"),
+            parseInt("{{ sold_resin_month|default:'0'|escapejs }}"),
+            parseInt("{{ sold_mehandi_week|default:'0'|escapejs }}"),
+            parseInt("{{ sold_resin_week|default:'0'|escapejs }}"),
+            parseInt("{{ sold_mehandi_all|default:'0'|escapejs }}"),
+            parseInt("{{ sold_resin_all|default:'0'|escapejs }}")
+          ],
+          backgroundColor: [
+            '#4ade80', '#22d3ee', '#fbbf24', '#f472b6', '#818cf8', '#f87171'
+          ],
+          borderRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'Stock Sales Overview', color: '#fff', font: { size: 18 } }
+        },
+        scales: {
+          x: { ticks: { color: '#fff' }, grid: { color: '#333' } },
+          y: { beginAtZero: true, ticks: { color: '#fff' }, grid: { color: '#333' } }
+        }
+      }
+    });
+  </script>
 </body>
 </html>

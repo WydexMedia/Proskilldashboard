@@ -48,3 +48,17 @@ class OgaRequest(models.Model):
 
     def __str__(self):
         return f"{self.oga_name} ({self.phone})"
+
+class StockTransaction(models.Model):
+    TRANSACTION_TYPE_CHOICES = [
+        ('add', 'Add'),
+        ('sell', 'Sell'),
+    ]
+    stock_type = models.CharField(max_length=20, choices=Stock.STOCK_TYPE_CHOICES)
+    quantity = models.IntegerField()
+    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE_CHOICES)
+    related_oga = models.ForeignKey('OgaRequest', null=True, blank=True, on_delete=models.SET_NULL)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.get_transaction_type_display()} {self.quantity} {self.get_stock_type_display()} on {self.created_at:%Y-%m-%d}"

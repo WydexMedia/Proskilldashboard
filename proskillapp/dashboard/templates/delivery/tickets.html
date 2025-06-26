@@ -8,593 +8,240 @@
     <title>Delivery Tickets - Premium Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2a2a2a 100%);
-            min-height: 100vh;
-            color: #ffffff;
-            position: relative;
-            overflow-x: auto;
+            color: #fff;
+            margin: 0;
+            padding: 0;
         }
-
-        /* Animated background pattern */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.02) 1px, transparent 1px),
-                radial-gradient(circle at 75% 75%, rgba(255,255,255,0.02) 1px, transparent 1px),
-                radial-gradient(circle at 50% 10%, rgba(255,255,255,0.01) 1px, transparent 1px),
-                radial-gradient(circle at 90% 40%, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 120px 120px, 100px 100px, 140px 140px, 80px 80px;
-            animation: float 25s ease-in-out infinite;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(180deg); }
-        }
-
-        /* Floating particles */
-        .particle {
-            position: fixed;
-            width: 3px;
-            height: 3px;
-            background: linear-gradient(45deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1));
-            border-radius: 50%;
-            animation: particle-float 12s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        .particle:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
-        .particle:nth-child(2) { top: 25%; right: 15%; animation-delay: 3s; }
-        .particle:nth-child(3) { bottom: 35%; left: 20%; animation-delay: 6s; }
-        .particle:nth-child(4) { bottom: 25%; right: 25%; animation-delay: 9s; }
-
-        @keyframes particle-float {
-            0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.2; }
-            50% { transform: translateY(-40px) translateX(30px); opacity: 0.8; }
-        }
-
         .container {
-            padding: 40px;
-            max-width: 1400px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 40px 0;
         }
-
-        /* Header */
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.05);
             border-radius: 20px;
-            padding: 24px 32px;
-            box-shadow: 
-                0 25px 50px -12px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            animation: slideDown 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 32px 40px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .header-flex {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: space-between;
         }
-
         h2 {
             font-size: 32px;
             font-weight: 600;
-            background: linear-gradient(135deg, #ffffff, #cccccc);
+            background: linear-gradient(135deg, #fff, #ccc);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            margin: 0;
         }
-
-        nav a {
-            display: inline-block;
-            text-decoration: none;
-            background: linear-gradient(135deg, rgba(220, 53, 69, 0.8), rgba(220, 53, 69, 0.6));
-            color: #ffffff;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 500;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(220, 53, 69, 0.3);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        nav a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: all 0.6s ease;
-        }
-
-        nav a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(220, 53, 69, 0.3);
-            background: linear-gradient(135deg, rgba(220, 53, 69, 0.9), rgba(220, 53, 69, 0.7));
-        }
-
-        nav a:hover::before {
-            left: 100%;
-        }
-
-        /* Dashboard Cards */
-        .dashboard-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 28px;
-            box-shadow: 
-                0 25px 50px -12px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            animation-delay: var(--delay, 0s);
-        }
-
-        .card:nth-child(1) { --delay: 0.1s; }
-        .card:nth-child(2) { --delay: 0.2s; }
-        .card:nth-child(3) { --delay: 0.3s; }
-        .card:nth-child(4) { --delay: 0.4s; }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            transition: all 0.8s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 
-                0 35px 70px -12px rgba(0, 0, 0, 0.6),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .card:hover::before {
-            left: 100%;
-        }
-
-        .card h3 {
-            margin: 0 0 12px;
-            font-size: 20px;
-            font-weight: 600;
-            background: linear-gradient(135deg, #4ade80, #22c55e);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .card p {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.5;
-        }
-
-        /* Actions Section */
-        .actions {
+        nav {
+            margin-left: auto;
             display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
             align-items: center;
-            margin-bottom: 32px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 20px 24px;
-            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
         }
-
-        .add-ticket {
-            display: inline-block;
+        nav a {
+            color: #fff;
             text-decoration: none;
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: #ffffff;
+            background: linear-gradient(135deg, #dc3545, #b52a37);
             padding: 12px 24px;
             border-radius: 12px;
             font-weight: 500;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
+            margin-left: 12px;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(220,53,69,0.15);
         }
-
-        .add-ticket::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: all 0.6s ease;
+        nav a:hover {
+            background: linear-gradient(135deg, #b52a37, #dc3545);
+            box-shadow: 0 4px 16px rgba(220,53,69,0.25);
         }
-
-        .add-ticket:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
-            background: linear-gradient(135deg, #16a34a, #15803d);
-        }
-
-        .add-ticket:hover::before {
-            left: 100%;
-        }
-
-        /* Sort Form */
-        form {
-            display: inline-flex;
+        .actions {
+            margin-bottom: 32px;
+            display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 18px;
         }
-
-        label {
+        .add-ticket {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            margin-right: 16px;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(34,197,94,0.15);
+        }
+        .add-ticket:hover {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            box-shadow: 0 4px 16px rgba(34,197,94,0.25);
+        }
+        .sort-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 10px;
+            padding: 8px 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .sort-form label {
             font-size: 14px;
             font-weight: 500;
-            color: rgba(255, 255, 255, 0.8);
+            color: #fff;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
-        select {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .sort-form select {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid #6366f1;
             border-radius: 8px;
             padding: 8px 16px;
-            color: #ffffff;
+            color: #fff;
             font-size: 14px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        select:focus {
             outline: none;
-            border-color: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            transition: border 0.2s, box-shadow 0.2s;
         }
-
-        select option {
-            background: #1a1a1a;
-            color: #ffffff;
+        .sort-form select:focus {
+            border: 1.5px solid #818cf8;
+            box-shadow: 0 0 8px #818cf8;
         }
-
-        /* Table */
         .table-container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.05);
             border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 
-                0 25px 50px -12px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s both;
+            overflow-x: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
+            background: transparent;
         }
-
-        th {
-            background: rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 20px 24px;
+        th, td {
+            padding: 18px 20px;
             text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 15px;
         }
-
+        th {
+            background: rgba(255,255,255,0.08);
+            font-weight: 700;
+            color: #fff;
+            border-bottom: 2px solid rgba(255,255,255,0.15);
+        }
         td {
-            padding: 20px 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
+            color: #fff;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
-
-        tbody tr {
-            transition: all 0.3s ease;
-            position: relative;
+        tr:hover td {
+            background: rgba(255,255,255,0.03);
         }
-
-        tbody tr::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-
-        tbody tr:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        tbody tr:hover::before {
-            width: 100%;
-        }
-
-        td:last-child {
-            white-space: nowrap;
-        }
-
-        /* Status Styles */
-        .status-pending {
-            color: #f59e0b;
-            font-weight: 600;
-            text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
-        }
-
-        .status-done {
-            color: #22c55e;
-            font-weight: 600;
-            text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
-        }
-
-        /* Button Styles */
-        .edit-btn, .delete-btn, .print-btn {
-            display: inline-block;
-            text-decoration: none;
-            padding: 8px 16px;
-            font-size: 12px;
-            border-radius: 8px;
-            color: #ffffff;
-            margin-right: 8px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid transparent;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .edit-btn {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-
-        .delete-btn {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            border-color: rgba(239, 68, 68, 0.3);
-        }
-
         .print-btn {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-            border-color: rgba(107, 114, 128, 0.3);
-        }
-
-        .edit-btn::before, .delete-btn::before, .print-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: all 0.6s ease;
-        }
-
-        .edit-btn:hover, .delete-btn:hover, .print-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .edit-btn:hover::before, .delete-btn:hover::before, .print-btn:hover::before {
-            left: 100%;
-        }
-
-        /* Mark as Shipped Form */
-        .shipping-form {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .shipping-form input[type="text"] {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            padding: 6px 12px;
-            color: #ffffff;
-            font-size: 12px;
-            width: 140px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .shipping-form input[type="text"]:focus {
-            outline: none;
-            border-color: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-        }
-
-        .shipping-form input[type="text"]::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .shipping-form button {
-            background: linear-gradient(135deg, #1d4ed8, #1e40af);
-            color: #ffffff;
-            padding: 6px 16px;
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+            color: #fff;
             border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-size: 14px;
             font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(10px);
+            margin-right: 8px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.15);
+            text-decoration: none;
+            display: inline-block;
         }
-
+        .print-btn:hover {
+            background: linear-gradient(135deg, #818cf8, #6366f1);
+            box-shadow: 0 4px 16px rgba(99,102,241,0.25);
+        }
+        .shipping-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .shipping-form input[type="text"] {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid #6366f1;
+            border-radius: 8px;
+            padding: 8px 14px;
+            color: #fff;
+            font-size: 14px;
+            transition: border 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .shipping-form input[type="text"]:focus {
+            border: 1.5px solid #818cf8;
+            box-shadow: 0 0 8px #818cf8;
+        }
+        .shipping-form button {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(34,197,94,0.15);
+        }
         .shipping-form button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
-            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            box-shadow: 0 4px 16px rgba(34,197,94,0.25);
         }
-
-        /* Responsive Design */
+        .status-done {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #fff;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(34,197,94,0.15);
+        }
+        .status-pending {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: #fff;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(245,158,11,0.15);
+        }
         @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
-                padding: 20px;
-            }
-
-            h2 {
-                font-size: 24px;
-            }
-
-            .dashboard-cards {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-
-            .actions {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-
-            .table-container {
-                overflow-x: auto;
-            }
-
-            table {
-                min-width: 800px;
-            }
-
-            th, td {
-                padding: 12px 16px;
-                font-size: 12px;
-            }
-
-            .shipping-form {
-                flex-direction: column;
-                gap: 6px;
-            }
-
-            .shipping-form input[type="text"] {
-                width: 120px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 16px;
-            }
-
-            .card {
-                padding: 20px;
-            }
-
-            .actions {
-                padding: 16px;
-            }
-
-            th, td {
-                padding: 8px 12px;
-            }
+            .container { padding: 20px; }
+            th, td { padding: 10px 8px; font-size: 13px; }
+            h2 { font-size: 22px; }
+            .shipping-form { flex-direction: column; align-items: stretch; gap: 6px; }
+            .actions { flex-direction: column; align-items: stretch; gap: 10px; }
         }
     </style>
 </head>
 <body>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-
     <div class="container">
         <header>
-            <h2>Delivery Tickets</h2>
-            <nav>
-                <a href="/logout/">Logout</a>
-            </nav>
+            <div class="header-flex">
+                <h2>Delivery Tickets</h2>
+                <nav>
+                    <a href="/logout/">Logout</a>
+                </nav>
+            </div>
         </header>
-
         <div class="actions">
             {% if request.user|has_group:"accounts" %}
                 <a href="{% url 'ticket_add' %}" class="add-ticket">+ Add Ticket</a>
             {% endif %}
-            <form method="get">
+            <form method="get" class="sort-form">
                 <label for="sort">Sort by:</label>
                 <select name="sort" id="sort" onchange="this.form.submit()">
                     <option value="unshipped" {% if sort == 'unshipped' %}selected{% endif %}>Unshipped on Top</option>
@@ -602,9 +249,8 @@
                 </select>
             </form>
         </div>
-
         <div class="table-container">
-            <table>
+            <table border="1">
                 <thead>
                     <tr>
                         <th>Stock</th>
@@ -619,9 +265,9 @@
                     {% timezone "Asia/Kolkata" %}
                     {% for ticket in tickets %}
                     <tr>
-                        <td>{{ ticket.stock.get_stock_type_display }}</td>
-                        <td>{{ ticket.delivery_to }}</td>
-                        <td>{{ ticket.created_at|date:'d-m-Y h:i A' }}</td>
+                        <td>{% if ticket.stock %}{{ ticket.stock.get_stock_type_display }}{% else %}No Stock{% endif %}</td>
+                        <td>{{ ticket.delivery_to|default:'-' }}</td>
+                        <td>{{ ticket.created_at|date:'d-m-Y h:i A'|default:'-' }}</td>
                         <td>
                             {% if request.user|has_group:"delivery partners" %}
                                 {% if not ticket.is_delivered %}
@@ -642,7 +288,7 @@
                                 {% endif %}
                             {% endif %}
                         </td>
-                        <td>{% if ticket.is_delivered %}{{ ticket.tracking_id }}{% endif %}</td>
+                        <td>{% if ticket.is_delivered %}{{ ticket.tracking_id }}{% else %}-{% endif %}</td>
                         <td>
                             <a href="{% url 'print_ticket' ticket.pk %}" class="print-btn">Print</a>
                             {% if request.user|has_group:"accounts" %}

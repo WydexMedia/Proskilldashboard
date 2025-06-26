@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Transactions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: #18181b; color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        .container { max-width: 1100px; margin: 40px auto; padding: 32px; background: #23232a; border-radius: 18px; box-shadow: 0 8px 32px #0002; }
+        h2 { font-size: 2rem; margin-bottom: 32px; text-align: left; padding-left: 4px; }
+        form { margin-bottom: 24px; }
+        select { padding: 8px 16px; border-radius: 8px; border: none; background: #2a2a35; color: #fff; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 12px; }
+        th, td { padding: 16px 12px; border-bottom: 1px solid #333; font-size: 15px; text-align: left; vertical-align: middle; }
+        th { background: #23232a; color: #a3e635; text-transform: uppercase; font-size: 13px; letter-spacing: 1px; }
+        tr:hover td { background: #23232a; }
+        td { color: #fff; }
+        .table-container { margin-top: 12px; }
+        @media (max-width: 700px) { .container { padding: 10px; } th, td { padding: 8px 4px; font-size: 12px; } h2 { font-size: 1.2rem; margin-bottom: 18px; padding-left: 2px; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Stock Transactions</h2>
+    <form method="get">
+        <label>Filter:
+            <select name="filter" onchange="this.form.submit()">
+                <option value="all" {% if filter_type == 'all' %}selected{% endif %}>All</option>
+                <option value="monthly" {% if filter_type == 'monthly' %}selected{% endif %}>This Month</option>
+                <option value="weekly" {% if filter_type == 'weekly' %}selected{% endif %}>This Week</option>
+                <option value="yearly" {% if filter_type == 'yearly' %}selected{% endif %}>This Year</option>
+            </select>
+        </label>
+    </form>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Stock Type</th>
+                    <th>Quantity</th>
+                    <th>Related OGA</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in transactions %}
+                <tr>
+                    <td>{{ tx.created_at|date:'d-m-Y H:i' }}</td>
+                    <td>{{ tx.get_stock_type_display }}</td>
+                    <td>{{ tx.quantity }}</td>
+                    <td>{% if tx.related_oga %}{{ tx.related_oga.oga_name }}{% elif tx.transaction_type == 'add' %}<span style="color:#a3e635;">Stock Added</span>{% else %}-{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No transactions found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -2,7 +2,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.views import LoginView
-from .models import Stock, DeliveryTicket, OgaRequest
+from .models import Stock, DeliveryTicket, OgaRequest, StockTransaction
 from .forms import StockForm, DeliveryTicketForm, OgaRequestForm, CustomDeliveryTicketForm
 from django.utils import timezone
 
@@ -18,7 +18,8 @@ def is_delivery(user):
 @user_passes_test(is_accounts)
 def accounts_dashboard(request):
     stocks = Stock.objects.all()
-    oga_requests = OgaRequest.objects.all().order_by('-submitted_at')
+    # Only show not approved OGA requests
+    oga_requests = OgaRequest.objects.filter(approved=False).order_by('-submitted_at')
     # Calculate total and available for each type
     total_mehandi = sum(stock.added_quantity for stock in Stock.objects.filter(stock_type='mehandi'))
     total_resin = sum(stock.added_quantity for stock in Stock.objects.filter(stock_type='resin'))
@@ -38,11 +39,31 @@ def accounts_dashboard(request):
                 oga.save()
                 stock.quantity -= 1
                 stock.save()
+                # Create StockTransaction for selling
+                StockTransaction.objects.create(
+                    stock_type=stock.stock_type,
+                    quantity=1,
+                    transaction_type='sell',
+                    related_oga=oga
+                )
                 DeliveryTicket.objects.create(
                     stock=stock,
                     delivery_to=f"{oga.oga_name}, {oga.phone}, {oga.email}, {oga.address}, {oga.pincode}"
                 )
         return redirect('accounts_dashboard')
+
+    # --- Sales stats for dashboard ---
+    from datetime import datetime, timedelta
+    now = timezone.now()
+    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    week_start = now - timedelta(days=now.weekday())
+    week_start = week_start.replace(hour=0, minute=0, second=0, microsecond=0)
+    sold_mehandi_month = StockTransaction.objects.filter(stock_type='mehandi', transaction_type='sell', created_at__gte=month_start).count()
+    sold_resin_month = StockTransaction.objects.filter(stock_type='resin', transaction_type='sell', created_at__gte=month_start).count()
+    sold_mehandi_week = StockTransaction.objects.filter(stock_type='mehandi', transaction_type='sell', created_at__gte=week_start).count()
+    sold_resin_week = StockTransaction.objects.filter(stock_type='resin', transaction_type='sell', created_at__gte=week_start).count()
+    sold_mehandi_all = StockTransaction.objects.filter(stock_type='mehandi', transaction_type='sell').count()
+    sold_resin_all = StockTransaction.objects.filter(stock_type='resin', transaction_type='sell').count()
 
     # Annotate each OgaRequest with can_approve property
     for oga in oga_requests:
@@ -63,6 +84,12 @@ def accounts_dashboard(request):
         'available_mehandi': available_mehandi,
         'total_resin': total_resin,
         'available_resin': available_resin,
+        'sold_mehandi_month': sold_mehandi_month,
+        'sold_resin_month': sold_resin_month,
+        'sold_mehandi_week': sold_mehandi_week,
+        'sold_resin_week': sold_resin_week,
+        'sold_mehandi_all': sold_mehandi_all,
+        'sold_resin_all': sold_resin_all,
     })
 
 # Stock CRUD
@@ -75,6 +102,14 @@ def stock_add(request):
             stock = form.save(commit=False)
             # No name field anymore, just save
             stock.save()
+            # Add StockTransaction for stock addition
+            from .models import StockTransaction
+            StockTransaction.objects.create(
+                stock_type=stock.stock_type,
+                quantity=stock.added_quantity,
+                transaction_type='add',
+                related_oga=None
+            )
             return redirect('accounts_dashboard')
     else:
         form = StockForm()
@@ -105,10 +140,12 @@ def stock_delete(request, pk):
 @login_required
 @user_passes_test(is_delivery)
 def delivery_tickets(request):
-    sort = request.GET.get('sort', 'pending')
+    sort = request.GET.get('sort', 'unshipped')
     tickets = DeliveryTicket.objects.all()
-    if sort == 'pending':
+    if sort == 'unshipped':
         tickets = tickets.order_by('is_delivered', '-created_at')
+    elif sort == 'date':
+        tickets = tickets.order_by('-created_at')
     elif sort == 'done':
         tickets = tickets.order_by('-is_delivered', '-created_at')
     else:
@@ -123,7 +160,6 @@ def delivery_tickets(request):
                 ticket = DeliveryTicket.objects.get(pk=ticket_id)
                 if status == 'done':
                     if not tracking_id:
-                        # Don't mark as done without tracking id
                         from django.contrib import messages
                         messages.error(request, 'Tracking ID required to mark as done.')
                     else:

@@ -2,6 +2,7 @@
 from django.urls import path
 from django.contrib.auth.views import LogoutView
 from . import views
+from .stock_transactions_view import stock_transactions
 
 from django.views.generic import TemplateView
 
@@ -22,4 +23,5 @@ urlpatterns = [
     path('delivery/ticket/<int:pk>/delete/', views.ticket_delete, name='ticket_delete'),
     path('delivery/ticket/<int:pk>/print/', views.print_ticket, name='print_ticket'),
     path('ogaform/', views.ogaform_view, name='ogaform'),
+    path('accounts/transactions/', stock_transactions, name='stock_transactions'),
 ]
