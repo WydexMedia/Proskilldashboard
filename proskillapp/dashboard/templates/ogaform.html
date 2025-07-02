@@ -442,7 +442,21 @@
             </div>
             <div class="form-group">
                 <label for="id_oga_name" class="form-label">OGA Name *</label>
-                <input type="text" id="id_oga_name" name="oga_name" class="form-input" required placeholder="Enter OGA Name" value="{{ form.oga_name.value|default:'' }}">
+                <select id="id_oga_name" name="oga_name" class="form-select" required>
+                    <option value="">Select OGA Name</option>
+                    <option value="LULU FATHIMA P A" {% if form.oga_name.value == 'LULU FATHIMA P A' %}selected{% endif %}>LULU FATHIMA P A</option>
+                    <option value="AYSHA SHAHANA P" {% if form.oga_name.value == 'AYSHA SHAHANA P' %}selected{% endif %}>AYSHA SHAHANA P</option>
+                    <option value="SALOOJA KK" {% if form.oga_name.value == 'SALOOJA KK' %}selected{% endif %}>SALOOJA KK</option>
+                    <option value="SANILA SHERIN" {% if form.oga_name.value == 'SANILA SHERIN' %}selected{% endif %}>SANILA SHERIN</option>
+                    <option value="FALIHA P P" {% if form.oga_name.value == 'FALIHA P P' %}selected{% endif %}>FALIHA P P</option>
+                    <option value="HASBANA P" {% if form.oga_name.value == 'HASBANA P' %}selected{% endif %}>HASBANA P</option>
+                    <option value="FAHIDA MARIYAM P P" {% if form.oga_name.value == 'FAHIDA MARIYAM P P' %}selected{% endif %}>FAHIDA MARIYAM P P</option>
+                    <option value="NIHALA THASLI P" {% if form.oga_name.value == 'NIHALA THASLI P' %}selected{% endif %}>NIHALA THASLI P</option>
+                    <option value="FATHIMA SAHANA TK" {% if form.oga_name.value == 'FATHIMA SAHANA TK' %}selected{% endif %}>FATHIMA SAHANA TK</option>
+                    <option value="SANA FATHIMA P" {% if form.oga_name.value == 'SANA FATHIMA P' %}selected{% endif %}>SANA FATHIMA P</option>
+                    <option value="NANDHANA C" {% if form.oga_name.value == 'NANDHANA C' %}selected{% endif %}>NANDHANA C</option>
+                    <option value="JINSHA HIBA P" {% if form.oga_name.value == 'JINSHA HIBA P' %}selected{% endif %}>JINSHA HIBA P</option>
+                </select>
             </div>
               <div class="form-group">
                 <label for="id_cust_name" class="form-label">Customer Name *</label>

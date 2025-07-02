@@ -218,6 +218,160 @@
             display: inline-block;
             box-shadow: 0 2px 8px rgba(245,158,11,0.15);
         }
+        /* Base Toast Styles */
+        .premium-toast {
+            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(20,20,20,0.9) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px 28px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            opacity: 0;
+            transform: translateX(400px) scale(0.8);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-width: 320px;
+            max-width: 400px;
+            box-shadow: 
+                0 10px 40px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .premium-toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .premium-toast:hover::before {
+            left: 100%;
+        }
+
+        .premium-toast.show {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+
+        .premium-toast.hide {
+            opacity: 0;
+            transform: translateX(400px) scale(0.8);
+        }
+
+        /* Error Toast Specific Styles */
+        .premium-toast.error {
+            border-left: 3px solid #ef4444;
+            color: #ffffff;
+        }
+
+        .premium-toast.error .toast-icon {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #ffffff;
+        }
+
+        .premium-toast.error .toast-progress {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        /* Success Toast Specific Styles */
+        .premium-toast.success {
+            border-left: 3px solid #22c55e;
+            color: #ffffff;
+        }
+
+        .premium-toast.success .toast-icon {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #ffffff;
+        }
+
+        .premium-toast.success .toast-progress {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+        }
+
+        /* Toast Content Structure */
+        .toast-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .toast-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .toast-message {
+            flex: 1;
+            line-height: 1.5;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .toast-close:hover {
+            color: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.1);
+        }
+
+        /* Toast Progress Bar */
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            border-radius: 0 0 16px 16px;
+            transition: width 5s linear;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .premium-toast {
+                min-width: auto;
+                max-width: none;
+                transform: translateY(-400px) scale(0.8);
+            }
+
+            .premium-toast.show {
+                transform: translateY(0) scale(1);
+            }
+
+            .premium-toast.hide {
+                transform: translateY(-400px) scale(0.8);
+            }
+        }
         @media (max-width: 768px) {
             .container { padding: 20px; }
             th, td { padding: 10px 8px; font-size: 13px; }
@@ -226,6 +380,60 @@
             .actions { flex-direction: column; align-items: stretch; gap: 10px; }
         }
     </style>
+    <script>
+        function showPremiumToast(message, type) {
+            var old = document.querySelector('.premium-toast');
+            if (old) old.remove();
+            var toast = document.createElement('div');
+            toast.className = 'premium-toast ' + (type || 'error');
+            toast.style.position = 'fixed';
+            toast.style.top = '32px';
+            toast.style.right = '32px';
+            toast.style.zIndex = 9999;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <div class="toast-icon">${type === 'success' ? '✓' : '✕'}</div>
+                    <div class="toast-message">${message}</div>
+                    <button class="toast-close" aria-label="Close">&times;</button>
+                </div>
+                <div class="toast-progress"></div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(function() {
+                toast.classList.add('show');
+            }, 10);
+            var progress = toast.querySelector('.toast-progress');
+            progress.style.width = '100%';
+            progress.style.transition = 'width 4s linear';
+            setTimeout(function() { progress.style.width = '0%'; }, 50);
+            toast.querySelector('.toast-close').onclick = function() {
+                toast.classList.remove('show');
+                toast.classList.add('hide');
+                setTimeout(function() { toast.remove(); }, 400);
+            };
+            setTimeout(function() {
+                toast.classList.remove('show');
+                toast.classList.add('hide');
+                setTimeout(function() { toast.remove(); }, 400);
+            }, 4000);
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.shipping-form').forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    var input = form.querySelector('input[name="tracking_id"]');
+                    if (!input.value.trim()) {
+                        e.preventDefault();
+                        showPremiumToast('Please enter track id', 'error');
+                        input.focus();
+                    } else {
+                        e.preventDefault();
+                        showPremiumToast('Marked as shipped successfully', 'success');
+                        setTimeout(function() { form.submit(); }, 1000);
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -274,7 +482,7 @@
                                     <form method="post" class="shipping-form">
                                         {% csrf_token %}
                                         <input type="hidden" name="ticket_id" value="{{ ticket.pk }}">
-                                        <input type="text" name="tracking_id" placeholder="Enter Tracking ID" required>
+                                        <input type="text" name="tracking_id" placeholder="Enter Tracking ID">
                                         <button type="submit" name="status" value="done">Mark as Shipped</button>
                                     </form>
                                 {% else %}

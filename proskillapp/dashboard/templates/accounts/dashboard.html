@@ -384,6 +384,10 @@
       font-style: italic;
     }
     
+    .danger-text {
+      color: red !important;
+    }
+    
     /* Responsive design */
     @media (max-width: 768px) {
       .container {
@@ -534,6 +538,9 @@
       color: #a3e635 !important;
       font-weight: 600 !important;
     }
+    .red-metric {
+      color: red !important;
+    }
     @media (max-width: 480px) {
       .small-metric { font-size: 16px !important; }
     }
@@ -619,44 +626,44 @@
 
     <div class="dashboard-grid">
       <div class="metric-card">
-        <div class="metric-value">{{ total_mehandi }}</div>
+        <div class="metric-value{% if total_mehandi == 0 %} red-metric{% endif %}">{{ total_mehandi }}</div>
         <div class="metric-label">Total Mehandi Stock</div>
       </div>
       <div class="metric-card">
-        <div class="metric-value">{{ available_mehandi }}</div>
+        <div class="metric-value{% if available_mehandi == 0 %} red-metric{% endif %}">{{ available_mehandi }}</div>
         <div class="metric-label">Available Mehandi</div>
       </div>
       <div class="metric-card">
-        <div class="metric-value">{{ total_resin }}</div>
+        <div class="metric-value{% if total_resin == 0 %} red-metric{% endif %}">{{ total_resin }}</div>
         <div class="metric-label">Total Resin Stock</div>
       </div>
       <div class="metric-card">
-        <div class="metric-value">{{ available_resin }}</div>
+        <div class="metric-value{% if available_resin <= 100 %} red-metric{% endif %}">{{ available_resin }}</div>
         <div class="metric-label">Available Resin</div>
       </div>
 
       <div class="metric-card sold-metric">
-        <div class="metric-value small-metric">{{ sold_mehandi_month }}</div>
+        <div class="metric-value small-metric{% if sold_mehandi_month == 0 %} red-metric{% endif %}">{{ sold_mehandi_month }}</div>
         <div class="metric-label">Mehandi Sold (This Month)</div>
       </div>
       <div class="metric-card sold-metric">
-        <div class="metric-value small-metric">{{ sold_resin_month }}</div>
+        <div class="metric-value small-metric{% if sold_resin_month == 0 %} red-metric{% endif %}">{{ sold_resin_month }}</div>
         <div class="metric-label">Resin Sold (This Month)</div>
       </div>
       <div class="metric-card sold-metric">
-        <div class="metric-value small-metric">{{ sold_mehandi_week }}</div>
+        <div class="metric-value small-metric{% if sold_mehandi_week == 0 %} red-metric{% endif %}">{{ sold_mehandi_week }}</div>
         <div class="metric-label">Mehandi Sold (This Week)</div>
       </div>
       <div class="metric-card sold-metric">
-        <div class="metric-value small-metric">{{ sold_resin_week }}</div>
+        <div class="metric-value small-metric{% if sold_resin_week == 0 %} red-metric{% endif %}">{{ sold_resin_week }}</div>
         <div class="metric-label">Resin Sold (This Week)</div>
       </div>
       <div class="metric-card sold-metric">
-        <div class="metric-value small-metric">{{ sold_mehandi_all }}</div>
+        <div class="metric-value small-metric{% if sold_mehandi_all == 0 %} red-metric{% endif %}">{{ sold_mehandi_all }}</div>
         <div class="metric-label">Mehandi Sold (All Time)</div>
       </div>
       <div class="metric-card sold-metric">
-        <div class="metric-value small-metric">{{ sold_resin_all }}</div>
+        <div class="metric-value small-metric{% if sold_resin_all == 0 %} red-metric{% endif %}">{{ sold_resin_all }}</div>
         <div class="metric-label">Resin Sold (All Time)</div>
       </div>
     </div>
