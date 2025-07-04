@@ -5,6 +5,7 @@ from django.contrib.auth.views import LoginView
 from .models import Stock, DeliveryTicket, OgaRequest, StockTransaction
 from .forms import StockForm, DeliveryTicketForm, OgaRequestForm, CustomDeliveryTicketForm
 from django.utils import timezone
+from dashboard.gmail_utils import send_gmail_api_mail
 
 # Role checks
 def is_accounts(user):
@@ -48,7 +49,8 @@ def accounts_dashboard(request):
                 )
                 DeliveryTicket.objects.create(
                     stock=stock,
-                    delivery_to=f"{oga.oga_name}, {oga.phone}, {oga.email}, {oga.address}, {oga.pincode}"
+                    delivery_to=f"{oga.oga_name}, {oga.phone}, {oga.email}, {oga.address}, {oga.pincode}",
+                    email=oga.email
                 )
         return redirect('accounts_dashboard')
 
@@ -166,6 +168,22 @@ def delivery_tickets(request):
                         ticket.is_delivered = True
                         ticket.tracking_id = tracking_id
                         ticket.save()
+                        # Send email to customer
+                        customer_email = ticket.email
+                        print(f"DEBUG: Attempting to send shipment email to {customer_email}")  # Debug print
+                        if customer_email:
+                            stock_type = ticket.stock.get_stock_type_display()
+                            subject = f"Your {stock_type} is shipped!"
+                            message = f"Hey, greetings from Proskill! Your {stock_type} is shipped to {ticket.delivery_to}. You can track it with Tracking ID: {tracking_id}"
+                            try:
+                                send_gmail_api_mail(
+                                    subject,
+                                    message,
+                                    customer_email,
+                                    from_email='delivery@proskilledu.com'
+                                )
+                            except Exception as e:
+                                print(f"EMAIL ERROR: {e}")
                 elif status == 'pending':
                     ticket.is_delivered = False
                     ticket.tracking_id = ''
@@ -196,7 +214,8 @@ def ticket_add(request):
             if stock:
                 DeliveryTicket.objects.create(
                     stock=stock,
-                    delivery_to=f"{oga.oga_name}, {oga.phone}, {oga.email}, {oga.address}, {oga.pincode}"
+                    delivery_to=f"{oga.oga_name}, {oga.phone}, {oga.email}, {oga.address}, {oga.pincode}",
+                    email=oga.email
                 )
             if request.user.groups.filter(name='accounts').exists():
                 return redirect('accounts_dashboard')

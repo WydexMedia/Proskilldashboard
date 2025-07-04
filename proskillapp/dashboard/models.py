@@ -19,12 +19,13 @@ class Stock(models.Model):
 class DeliveryTicket(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     delivery_to = models.CharField(max_length=100)
+    email = models.EmailField(blank=True, null=True)  # New field for direct customer email storage
     created_at = models.DateTimeField(auto_now_add=True)
     is_delivered = models.BooleanField(default=False)
     tracking_id = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.stock.name} → {self.delivery_to}"
+        return f"{self.stock.name}  {self.delivery_to}"
 
 class OgaRequest(models.Model):
     STOCK_TYPE_CHOICES = [

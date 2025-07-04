@@ -106,3 +106,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/redirect/'
 LOGOUT_REDIRECT_URL = 'login'
+
+# Email backend configuration for Gmail API (handled in code, not Django backend)
+# The following settings are not used when using Gmail API directly:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'delivery.proskilledu.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'delivery.proskilledu.com'
+# EMAIL_HOST_PASSWORD = 'Delivery@proskill'
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = 'delivery.proskilledu.com'
