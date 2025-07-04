@@ -49,8 +49,9 @@ def accounts_dashboard(request):
                 )
                 DeliveryTicket.objects.create(
                     stock=stock,
-                    delivery_to=f"{oga.oga_name}, {oga.phone}, {oga.email}, {oga.address}, {oga.pincode}",
-                    email=oga.email
+                    delivery_to=f"{oga.customer_name}, {oga.phone}, {oga.email}, {oga.address}, {oga.pincode}",
+                    email=oga.email,
+                    oga_request=oga
                 )
         return redirect('accounts_dashboard')
 
@@ -214,7 +215,7 @@ def ticket_add(request):
             if stock:
                 DeliveryTicket.objects.create(
                     stock=stock,
-                    delivery_to=f"{oga.oga_name}, {oga.phone}, {oga.email}, {oga.address}, {oga.pincode}",
+                    delivery_to=f"{oga.customer_name}, {oga.phone}, {oga.email}, {oga.address}, {oga.pincode}",
                     email=oga.email
                 )
             if request.user.groups.filter(name='accounts').exists():
