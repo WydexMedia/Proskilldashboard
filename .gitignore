@@ -31,3 +31,8 @@ venv/
 # Other
 *.swp
 .idea/
+# OAuth credentials
+credentials.json
+token.json
+
+
